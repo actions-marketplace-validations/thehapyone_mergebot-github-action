@@ -1,26 +1,77 @@
-name: The name of your action here
-description: Provide a description here
-author: Your name or organization here
+name: Mergebot Pull Request Analysis
+description: Run Mergebot’s ondemand analyzer inside GitHub Actions using GitHub App credentials.
+author: Mergebot
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: heart
-  color: red
+  icon: git-merge
+  color: blue
 
-# Define your inputs here.
 inputs:
-  who-to-greet:
-    description: Your input description here
+  github-app-id:
+    description: GitHub App ID used by Mergebot.
     required: true
-    default: World
-
-# Define your outputs here.
-outputs:
-  greeting:
-    description: Your output description here
+  github-app-private-key:
+    description: Multiline private key (PEM) generated for the Mergebot GitHub App.
+    required: true
+  github-app-installation-id:
+    description: Optional installation ID if automatic discovery fails.
+    required: false
+  config-path:
+    description: Relative or absolute path to the Mergebot config inside the workspace.
+    required: false
+  project:
+    description: Override the repository slug Mergebot should target (defaults to the current repo).
+    required: false
+  workers:
+    description: Number of Mergebot workers to spawn.
+    required: false
+  max-concurrency:
+    description: Max concurrent pull requests/projects to process.
+    required: false
+  log-level:
+    description: Mergebot log level (debug, info, warn).
+    required: false
+    default: info
+  mergebot-command:
+    description: Mergebot subcommand to execute (ondemand, queue, etc.).
+    required: false
+    default: ondemand
+  extra-args:
+    description: Additional CLI flags appended verbatim to the Mergebot command.
+    required: false
+  azure-api-key:
+    description: Optional Azure/OpenAI API key for LLM access.
+    required: false
+  azure-api-base:
+    description: Optional Azure endpoint base URL.
+    required: false
+  azure-api-version:
+    description: Optional Azure API version string.
+    required: false
+  requests-ca-bundle:
+    description: Optional CA bundle path to trust corporate proxies.
+    required: false
+  dry-run:
+    description: When true, print the Mergebot command without executing (used for tests).
+    required: false
+    default: "false"
 
 runs:
   using: docker
   image: Dockerfile
   env:
-    INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+    INPUT_GITHUB_APP_ID: ${{ inputs.github-app-id }}
+    INPUT_GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
+    INPUT_GITHUB_APP_INSTALLATION_ID: ${{ inputs.github-app-installation-id }}
+    INPUT_CONFIG_PATH: ${{ inputs.config-path }}
+    INPUT_PROJECT: ${{ inputs.project }}
+    INPUT_WORKERS: ${{ inputs.workers }}
+    INPUT_MAX_CONCURRENCY: ${{ inputs.max-concurrency }}
+    INPUT_LOG_LEVEL: ${{ inputs.log-level }}
+    INPUT_MERGEBOT_COMMAND: ${{ inputs.mergebot-command }}
+    INPUT_EXTRA_ARGS: ${{ inputs.extra-args }}
+    INPUT_AZURE_API_KEY: ${{ inputs.azure-api-key }}
+    INPUT_AZURE_API_BASE: ${{ inputs.azure-api-base }}
+    INPUT_AZURE_API_VERSION: ${{ inputs.azure-api-version }}
+    INPUT_REQUESTS_CA_BUNDLE: ${{ inputs.requests-ca-bundle }}
+    INPUT_DRY_RUN: ${{ inputs.dry-run }}

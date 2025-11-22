@@ -1,11 +1,8 @@
-# Set the base image to use for subsequent instructions
-FROM alpine:3.22
+# Base Mergebot runtime image includes the CLI and dependencies.
+FROM thehapyone/mergebot:latest
 
-# Set the working directory inside the container
-WORKDIR /usr/src
+WORKDIR /action
 
-# Copy any source file(s) required for the action
-COPY entrypoint.sh .
+COPY --chmod=0755 entrypoint.sh /action/entrypoint.sh
 
-# Configure the container to be run as an executable
-ENTRYPOINT ["/usr/src/entrypoint.sh"]
+ENTRYPOINT ["/action/entrypoint.sh"]
